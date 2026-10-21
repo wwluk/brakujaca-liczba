@@ -75,14 +75,14 @@ function buildQuestion(prevKey) {
     let numbers;
 
     if (operation === "add") {
-      const a = randomInt(0, limit);
-      const b = randomInt(0, limit - a);
-      const c = randomInt(0, limit - a - b);
+      const a = randomInt(1, limit - 2);
+      const b = randomInt(1, limit - a - 1);
+      const c = randomInt(1, limit - a - b);
       numbers = [a, b, c, a + b + c];
     } else {
-      const a = randomInt(0, limit);
-      const b = randomInt(0, a);
-      const c = randomInt(0, a - b);
+      const a = randomInt(3, limit);
+      const b = randomInt(1, a - 2);
+      const c = randomInt(1, a - b - 1);
       numbers = [a, b, c, a - b - c];
     }
 
