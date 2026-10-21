@@ -71,35 +71,30 @@ function buildQuestion(prevKey) {
 
   while (guard < 50) {
     const operation = state.mode === "mixed" ? (Math.random() < 0.5 ? "add" : "sub") : state.mode;
+    const limit = state.limit;
+    let numbers;
 
     if (operation === "add") {
-      const a = randomInt(0, 10);
-      const b = randomInt(0, 10);
-      const total = a + b;
-      const missing = randomInt(0, 2);
-
-      if (missing === 0) {
-        question = { answer: a, key: `?+${b}=${total}`, text: `? + ${b} = ${total}` };
-      } else if (missing === 1) {
-        question = { answer: b, key: `${a}+?=${total}`, text: `${a} + ? = ${total}` };
-      } else {
-        question = { answer: total, key: `${a}+${b}=?`, text: `${a} + ${b} = ?` };
-      }
+      const a = randomInt(0, limit);
+      const b = randomInt(0, limit - a);
+      const c = randomInt(0, limit - a - b);
+      numbers = [a, b, c, a + b + c];
     } else {
-      const a = randomInt(0, 10);
-      const b = randomInt(0, 10);
-      if (a < b) continue;
-      const diff = a - b;
-      const missing = randomInt(0, 2);
-
-      if (missing === 0) {
-        question = { answer: a, key: `?-${b}=${diff}`, text: `? - ${b} = ${diff}` };
-      } else if (missing === 1) {
-        question = { answer: b, key: `${a}-?=${diff}`, text: `${a} - ? = ${diff}` };
-      } else {
-        question = { answer: diff, key: `${a}-${b}=?`, text: `${a} - ${b} = ?` };
-      }
+      const a = randomInt(0, limit);
+      const b = randomInt(0, a);
+      const c = randomInt(0, a - b);
+      numbers = [a, b, c, a - b - c];
     }
+
+    const missing = randomInt(0, 3);
+    const symbols = operation === "add" ? ["+", "+", "="] : ["-", "-", "="];
+    const parts = numbers.map((number, index) => index === missing ? "?" : String(number));
+    const expression = `${parts[0]} ${symbols[0]} ${parts[1]} ${symbols[1]} ${parts[2]} ${symbols[2]} ${parts[3]}`;
+    question = {
+      answer: numbers[missing],
+      key: expression.replaceAll(" ", ""),
+      text: expression,
+    };
 
     if (!prevKey || question.key !== prevKey) break;
     guard += 1;
